@@ -1,4 +1,7 @@
 #include<iostream>
+#include<sstream>
+#include<fstream>
+#include<string>
 #include "Sudoku.h"
 
 
@@ -108,6 +111,33 @@ bool Sudoku::LoadData(int ** puzzle_mtx)
 		}
 	}
 	return true;
+}
+
+bool Sudoku::LoadFromFile(std::string fpath)
+{
+	std::ifstream istream(fpath);
+	if (istream.is_open())
+	{
+		std::string line;
+		int curr = 0;
+		int d[81];
+		while (std::getline(istream, line)) {   // get a whole line
+			std::stringstream ss(line);
+			while (std::getline(ss, line, ' ')) {
+				d[curr] = std::stoi(line);
+				curr++;
+			}
+		}
+		if (curr < 81)
+		{
+			std::cerr << "Sudoku problem in file " + fpath + " is  incomplete!" << std::endl;
+			std::cerr << curr << " values found, please input a complete file." << std::endl;
+			std::getchar();
+			return false;
+		}
+		LoadData(d);
+	}
+	istream.close();
 }
 
 bool Sudoku::CheckValid()

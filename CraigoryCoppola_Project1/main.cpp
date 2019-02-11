@@ -19,29 +19,7 @@ int main(int argc, char *argv[]) {
 	if (argc == 2)
 	{
 		std::string fpath = argv[1];
-		std::ifstream istream(fpath);
-		if (istream.is_open())
-		{
-			std::string line;
-			int curr = 0;
-			int d[81];
-			while (std::getline(istream, line)) {   // get a whole line
-				std::stringstream ss(line);
-				while (std::getline(ss, line, ' ')) {
-					d[curr] = std::stoi(line);
-					curr++;
-				}
-			}
-			if (curr < 81)
-			{
-				std::cout << "Sudoku problem in file " + fpath + " is  incomplete!" << std::endl;
-				std::cout << curr << " values found, please input a complete file." << std::endl;
-				std::getchar();
-				return -1;
-			}
-			s.LoadData(d);
-		}
-		istream.close();
+		s.LoadFromFile(fpath);
 	}
 	else {
 		s = Sudoku();
