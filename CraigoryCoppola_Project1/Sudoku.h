@@ -8,6 +8,8 @@ class Sudoku
 {
 private:
 	SudokuPuzzle puzzle;
+	SudokuPuzzle solved;
+	bool RecursiveSolver(int curr, SudokuPuzzle state);
 public:
 	Sudoku();
 	~Sudoku();
@@ -16,7 +18,14 @@ public:
 	Sudoku(int * puzzle_arr); //Constructor given a 1*81 matrix
 
 	void Display();
-
+	void SetBlocks();
+	void HighlightImportant(int x, int y);
+	bool SetCell(int value, int x, int y);
+	bool CheckValid(); //Validate each row, column, and block
+	bool CheckValid(int x, int y); //Check if a specific cell is valid in the current puzzle
+	bool Solve();
 	bool operator=(Sudoku other);
+
+	static bool CheckValid(int x, int y, SudokuPuzzle state);
 };
 
