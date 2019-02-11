@@ -24,6 +24,8 @@ public:
 	bool CheckValid(); //Validate each row, column, and block
 	bool CheckValid(int x, int y); //Check if a specific cell is valid in the current puzzle
 	bool Solve();
+	bool LoadData(int * puzzle_arr); //Similar to constructor
+	bool LoadData(int ** puzzle_mtx); //Similar to constructor
 	bool operator=(Sudoku other);
 
 	static bool CheckValid(int x, int y, SudokuPuzzle state);

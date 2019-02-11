@@ -37,28 +37,18 @@ Sudoku::Sudoku()
 
 Sudoku::~Sudoku()
 {
-	delete &puzzle;
 }
 
 Sudoku::Sudoku(int ** puzzle_mtx)
 {
 	puzzle = SudokuPuzzle();
-	for (int i = 0; i < 9; i++)
-	{
-		for (int j = 0; j < 9; j++)
-		{
-			puzzle.data[i * 9 + j] = puzzle_mtx[i][j];
-		}
-	}
+	LoadData(puzzle_mtx);
 }
 
 Sudoku::Sudoku(int * puzzle_arr)
 {
 	puzzle = SudokuPuzzle();
-	for (int i = 0; i < 81; i++)
-	{
-		puzzle.data[i] = (short)puzzle_arr[i];
-	}
+	LoadData(puzzle_arr);
 }
 
 void Sudoku::Display()
@@ -97,6 +87,27 @@ void Sudoku::Display()
 
 bool Sudoku::Solve() {
 	return RecursiveSolver(0, puzzle);
+}
+
+bool Sudoku::LoadData(int * puzzle_arr)
+{
+	for (int i = 0; i < 81; i++)
+	{
+		puzzle.data[i] = (short)puzzle_arr[i];
+	}
+	return true;
+}
+
+bool Sudoku::LoadData(int ** puzzle_mtx)
+{
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			puzzle.data[i * 9 + j] = puzzle_mtx[i][j];
+		}
+	}
+	return true;
 }
 
 bool Sudoku::CheckValid()
