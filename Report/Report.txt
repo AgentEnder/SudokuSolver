@@ -1,0 +1,22 @@
+Data Structures{
+  This project makes use of structs, classes, and a linked list.
+  
+  There are 2 structs used, one to implement a simple linked list (StateList) and 1 to act as a wrapper around the short[] that contains all of the data for a puzzle.
+  The linked list holds a SudokuPuzzle data instance,and a pointer to the next node in the list
+  
+  There is one class, Sudoku. This class contains the methods to build, display, and solve the puzzles.
+  
+  The puzzles that are stored in the SudokuPuzzle struct are stored as a short[81], a linear array representing the 9x9 matrix.
+}
+
+Algorithms{
+  The recursive solve algorithm implements a simple recursive backtracking to solve sudoku problems. My specific implementation stores found solutions into the StackList solutions. This is slower than if you were to return true after solving, but is capable of finding every solution rather than only the first.
+  
+  The CheckValid function validates each row, column, and block of the current puzzle state (or others given the overloads).
+}
+
+Performance{
+  The algorithm is fairly performant, mainly due to the limited size of the problem. Given a larger puzzle (say 20x20 or something), it would slow dramatically.
+  
+  The algorithm does exit quickly given invalid puzzles, due to checking validity before backtrackings.
+}
