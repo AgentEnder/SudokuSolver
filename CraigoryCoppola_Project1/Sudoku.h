@@ -37,7 +37,7 @@ public:
 	bool LoadData(int * puzzle_arr); //Similar to constructor
 	bool LoadData(int ** puzzle_mtx); //Similar to constructor
 	bool LoadFromFile(std::string fpath);
-	bool operator=(Sudoku other);
+	bool operator==(Sudoku other);
 
 	bool CheckValid(SudokuPuzzle state);
 	static bool CheckValid(int x, int y, SudokuPuzzle state);
