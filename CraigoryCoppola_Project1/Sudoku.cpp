@@ -380,7 +380,7 @@ bool Sudoku::SetCell(int value, int x, int y)
 	return true;
 }
 
-bool Sudoku::operator=(Sudoku other)
+bool Sudoku::operator==(Sudoku other)
 {
 	for (int i = 0; i < 81; i++)
 	{
