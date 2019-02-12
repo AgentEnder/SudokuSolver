@@ -14,7 +14,6 @@
 
 
 int main(int argc, char *argv[]) {
-	std::cout << "To load a puzzle from a file, run this executable with the filepath as a command argument" << std::endl << std::endl;
 	Sudoku s;
 	if (argc == 2)
 	{
@@ -22,6 +21,7 @@ int main(int argc, char *argv[]) {
 		s.LoadFromFile(fpath);
 	}
 	else {
+		std::cout << "To load a puzzle from a file, run this executable with the filepath as a command argument" << std::endl << std::endl;
 		s = Sudoku();
 		for (int i = 0; i < 9; i++)
 		{
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 				int in;
 				std::cin >> in;
 				bool valid = s.SetCell(in, k, i);
-				while (s.CheckValid() == false || valid == false) {
+				while (s.CheckValid(k, i) == false || valid == false) {
 					std::cout << "Please enter a valid number: ";
 					int in;
 					std::cin >> in;
@@ -43,11 +43,27 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
-	
+
 
 	s.Display();
-	if (s.Solve() == true)
-		s.Display();
+
+	if (s.CheckValid() == false)
+	{
+		std::cerr << "The supplied sudoku puzzle is not valid!" << std::endl;
+	}
+
+	if (s.Solve() == true) {
+		int c = s.getSlnCount();
+		if (c == 1)
+			std::cout << "There is a unique solution!" << std::endl;
+		else
+			std::cout << "There are " << c << " solutions!" << std::endl;
+		StateList * solutions = s.getSolutions();
+		while (solutions != NULL) {
+			s.Display(solutions->state);
+			solutions = solutions->next;
+		}
+	}
 	else
 		std::cout << "This puzzle cannot be solved!" << std::endl;
 	std::cout << "Press any key to continue!" << std::endl;

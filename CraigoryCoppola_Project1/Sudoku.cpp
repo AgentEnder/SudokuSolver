@@ -9,8 +9,16 @@ bool Sudoku::RecursiveSolver(int curr, SudokuPuzzle state)
 {
 	if (curr == 81)
 	{
-		puzzle = state;
-		return true;
+		if (CheckValid(state) == true) {
+			StateList * temp = new StateList{ state, solutions };
+			solutions = temp;
+			slnCount++;
+			std::cerr << "Solution found, currently at " << slnCount << " solutions" << std::endl;
+			return true;
+		}
+		else {
+			Display(state);
+		}
 	}
 	if (state.data[curr] == 0)
 	{
@@ -19,9 +27,10 @@ bool Sudoku::RecursiveSolver(int curr, SudokuPuzzle state)
 			state.data[curr] = i;
 			if (CheckValid(curr % 9, curr / 9, state) == true)
 			{
-				if (RecursiveSolver(curr + 1, state) == true) {
+				RecursiveSolver(curr + 1, state);
+				/*if (RecursiveSolver(curr + 1, state) == true) {
 					return true;
-				}
+				}*/
 			}
 		}
 	}
@@ -54,7 +63,7 @@ Sudoku::Sudoku(int * puzzle_arr)
 	LoadData(puzzle_arr);
 }
 
-void Sudoku::Display()
+void Sudoku::Display(SudokuPuzzle state)
 {
 	std::cout << std::endl;
 	int cell;
@@ -71,10 +80,10 @@ void Sudoku::Display()
 			{
 				std::cout << "| ";
 			}
-			cell = puzzle.data[y * 9 + x];
+			cell = state.data[y * 9 + x];
 			if (cell > 0)
 			{
-				std::cout << puzzle.data[y * 9 + x] << " ";
+				std::cout << state.data[y * 9 + x] << " ";
 			}
 			else if (cell == 0) {
 				std::cout << "- ";
@@ -88,8 +97,24 @@ void Sudoku::Display()
 	std::cout << std::endl;
 }
 
+StateList * Sudoku::getSolutions()
+{
+	return solutions;
+}
+
+int Sudoku::getSlnCount()
+{
+	return slnCount;
+}
+
+void Sudoku::Display()
+{
+	Display(puzzle);
+}
+
 bool Sudoku::Solve() {
-	return RecursiveSolver(0, puzzle);
+	RecursiveSolver(0, puzzle);
+	return slnCount > 0;
 }
 
 bool Sudoku::LoadData(int * puzzle_arr)
@@ -140,7 +165,12 @@ bool Sudoku::LoadFromFile(std::string fpath)
 	istream.close();
 }
 
-bool Sudoku::CheckValid()
+
+bool Sudoku::CheckValid() {
+	return CheckValid(puzzle);
+}
+
+bool Sudoku::CheckValid(SudokuPuzzle state)
 {
 	bool bitFlags[9] = { false, false, false, false, false, false, false, false, false };
 	short cell;
@@ -148,7 +178,7 @@ bool Sudoku::CheckValid()
 	{
 		for (int x = 0; x < 9; x++)
 		{
-			cell = puzzle.data[row * 9 + x] - 1;
+			cell = state.data[row * 9 + x] - 1;
 			if (cell == -1) continue;
 
 			if (bitFlags[cell] == true)
@@ -168,7 +198,7 @@ bool Sudoku::CheckValid()
 	{
 		for (int y = 0; y < 9; y++)
 		{
-			cell = puzzle.data[y * 9 + column] - 1;
+			cell = state.data[y * 9 + column] - 1;
 			if (cell == -1) continue;
 
 			if (bitFlags[cell] == true)
@@ -184,7 +214,8 @@ bool Sudoku::CheckValid()
 		for (int i = 0; i < 9; i++)
 			bitFlags[i] = false;
 	}
-
+	for (int i = 0; i < 9; i++)
+		bitFlags[i] = false;
 	for (int block = 0; block < 9; block++) // validate blocks
 	{
 		int x_min = 3 * (block % 3); // Block X is 0,1,2, blocks are 3x3 so mult 3 gives the left most edge of the block.
@@ -194,10 +225,12 @@ bool Sudoku::CheckValid()
 		{
 			for (int x = x_min; x < x_min + 3; x++)
 			{
-				cell == puzzle.data[y * 9 + x] - 1;
+				cell = state.data[y * 9 + x] - 1;
 				if (cell == -1) continue;
 				if (bitFlags[cell] == true)
 				{
+					std::cerr << "Block " << block << " already contains " << cell + 1 << "!\n" << std::endl;
+					std::cerr << "Error found at " << x << "," << y << std::endl;
 					return false;
 				}
 				else
@@ -214,13 +247,19 @@ bool Sudoku::CheckValid()
 
 bool Sudoku::CheckValid(int x, int y)
 {
+	return CheckValid(x,y,puzzle);
+}
+
+bool Sudoku::CheckValid(int x, int y, SudokuPuzzle state)
+{
 	bool bitFlags[9] = { false, false, false, false, false, false, false, false, false };
 	short cell;
 	// validate row
 	for (int x = 0; x < 9; x++)
 	{
-		cell = puzzle.data[y * 9 + x] - 1;
+		cell = state.data[y * 9 + x] - 1;
 		if (cell == -1) continue;
+
 		if (bitFlags[cell] == true)
 		{
 			return false;
@@ -236,8 +275,9 @@ bool Sudoku::CheckValid(int x, int y)
 	// validate column
 	for (int y = 0; y < 9; y++)
 	{
-		cell = puzzle.data[y * 9 + x] - 1;
+		cell = state.data[y * 9 + x] - 1;
 		if (cell == -1) continue;
+
 		if (bitFlags[cell] == true)
 		{
 			return false;
@@ -260,8 +300,9 @@ bool Sudoku::CheckValid(int x, int y)
 	{
 		for (int x = x_min; x < x_min + 3; x++)
 		{
-			cell = puzzle.data[y * 9 + x] - 1;
+			cell = state.data[y * 9 + x] - 1;
 			if (cell == -1) continue;
+
 			if (bitFlags[cell] == true)
 			{
 				return false;
@@ -274,6 +315,7 @@ bool Sudoku::CheckValid(int x, int y)
 	}
 	return true;
 }
+
 
 void Sudoku::SetBlocks() {
 	for (int block = 0; block < 9; block++) // validate blocks
@@ -350,68 +392,3 @@ bool Sudoku::operator=(Sudoku other)
 	return true;
 }
 
-bool Sudoku::CheckValid(int x, int y, SudokuPuzzle state)
-{
-	bool bitFlags[9] = { false, false, false, false, false, false, false, false, false };
-	short cell;
-	// validate row
-	for (int x = 0; x < 9; x++)
-	{
-		cell = state.data[y * 9 + x] - 1;
-		if (cell == -1) continue;
-
-		if (bitFlags[cell] == true)
-		{
-			return false;
-		}
-		else
-		{
-			bitFlags[cell] = true;
-		}
-	}
-	for (int i = 0; i < 9; i++)
-		bitFlags[i] = false;
-
-	// validate column
-	for (int y = 0; y < 9; y++)
-	{
-		cell = state.data[y * 9 + x] - 1;
-		if (cell == -1) continue;
-
-		if (bitFlags[cell] == true)
-		{
-			return false;
-		}
-		else
-		{
-			bitFlags[cell] = true;
-		}
-	}
-
-	for (int i = 0; i < 9; i++)
-		bitFlags[i] = false;
-
-	// validate block
-	int block = 3 * (y / 3) + x / 3;
-	int x_min = 3 * (block % 3); // Block X is 0,1,2, blocks are 3x3 so mult 3 gives the left most edge of the block.
-	int y_min = 3 * (block / 3); //Integer divison causes 3* 7/3 to be 6, giving the top mmost y coordinate in a block from any y coordinate in the block.
-
-	for (int y = y_min; y < y_min + 3; y++)
-	{
-		for (int x = x_min; x < x_min + 3; x++)
-		{
-			cell = state.data[y * 9 + x] - 1;
-			if (cell == -1) continue;
-
-			if (bitFlags[cell] == true)
-			{
-				return false;
-			}
-			else
-			{
-				bitFlags[cell] = true;
-			}
-		}
-	}
-	return true;
-}
