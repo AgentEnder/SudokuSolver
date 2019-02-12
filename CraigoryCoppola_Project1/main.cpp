@@ -59,9 +59,12 @@ int main(int argc, char *argv[]) {
 		else
 			std::cout << "There are " << c << " solutions!" << std::endl;
 		StateList * solutions = s.getSolutions();
-		while (solutions != NULL) {
+		while (solutions != nullptr) {
 			s.Display(solutions->state);
-			solutions = solutions->next;
+			if(solutions->next== nullptr)
+				break;
+			else
+				solutions = solutions->next;
 		}
 	}
 	else

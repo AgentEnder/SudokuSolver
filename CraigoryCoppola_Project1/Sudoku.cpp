@@ -24,8 +24,8 @@ bool Sudoku::RecursiveSolver(int curr, SudokuPuzzle state)
 	{
 		for (int i = 1; i <= 9; i++)
 		{
-			state.data[curr] = i;
-			if (CheckValid(curr % 9, curr / 9, state) == true)
+			state.data[curr] = (short)i;
+			if (CheckValid(curr % 9, curr / 9, state))
 			{
 				RecursiveSolver(curr + 1, state);
 				/*if (RecursiveSolver(curr + 1, state) == true) {
@@ -35,7 +35,7 @@ bool Sudoku::RecursiveSolver(int curr, SudokuPuzzle state)
 		}
 	}
 	else {
-		if (RecursiveSolver(curr + 1, state) == true) {
+		if (RecursiveSolver(curr + 1, state)) {
 			return true;
 		}
 	}
@@ -45,21 +45,29 @@ bool Sudoku::RecursiveSolver(int curr, SudokuPuzzle state)
 Sudoku::Sudoku()
 {
 	puzzle = { {0} };
+	solutions = nullptr;
 }
 
 Sudoku::~Sudoku()
 {
+	while(solutions != nullptr){
+		StateList * temp = solutions;
+		solutions = temp->next;
+		delete temp;
+	}
 }
 
 Sudoku::Sudoku(int ** puzzle_mtx)
 {
 	puzzle = SudokuPuzzle();
+	solutions = nullptr;
 	LoadData(puzzle_mtx);
 }
 
 Sudoku::Sudoku(int * puzzle_arr)
 {
 	puzzle = SudokuPuzzle();
+	solutions = nullptr;
 	LoadData(puzzle_arr);
 }
 
@@ -380,7 +388,7 @@ bool Sudoku::SetCell(int value, int x, int y)
 	return true;
 }
 
-bool Sudoku::operator==(Sudoku other)
+bool Sudoku::operator=(Sudoku other)
 {
 	for (int i = 0; i < 81; i++)
 	{
