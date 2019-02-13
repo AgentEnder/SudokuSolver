@@ -45,7 +45,6 @@ bool Sudoku::RecursiveSolver(int curr, SudokuPuzzle state)
 Sudoku::Sudoku()
 {
 	puzzle = { {0} };
-	solutions = nullptr;
 }
 
 Sudoku::~Sudoku()
@@ -60,14 +59,12 @@ Sudoku::~Sudoku()
 Sudoku::Sudoku(int ** puzzle_mtx)
 {
 	puzzle = SudokuPuzzle();
-	solutions = nullptr;
 	LoadData(puzzle_mtx);
 }
 
 Sudoku::Sudoku(int * puzzle_arr)
 {
 	puzzle = SudokuPuzzle();
-	solutions = nullptr;
 	LoadData(puzzle_arr);
 }
 
@@ -171,6 +168,7 @@ bool Sudoku::LoadFromFile(std::string fpath)
 		LoadData(d);
 	}
 	istream.close();
+	return true;
 }
 
 

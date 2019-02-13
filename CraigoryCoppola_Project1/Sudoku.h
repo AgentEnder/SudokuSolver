@@ -13,7 +13,7 @@ class Sudoku
 {
 private:
 	SudokuPuzzle puzzle;
-	StateList * solutions;
+	StateList * solutions = nullptr;
 	int slnCount = 0;
 	bool RecursiveSolver(int curr, SudokuPuzzle state);
 public:
